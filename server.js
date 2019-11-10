@@ -1,8 +1,10 @@
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+
+const app = express();
+app.use(cors());
 
 const dbURI = process.env.MLAB_URI || 'mongodb://localhost/exercise-track';
 
@@ -12,7 +14,7 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true
   },
-  function(err) {
+  function (err) {
     if (!err) {
       console.log('Successfully connected to the MongoDB');
     } else {
@@ -23,7 +25,6 @@ mongoose.connect(
   }
 );
 
-app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
