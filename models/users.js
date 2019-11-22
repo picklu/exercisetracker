@@ -1,8 +1,8 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // Schema for urls
-var usersSchema = new mongoose.Schema({
-    id: {
+const usersSchema = new mongoose.Schema({
+    _id: {
         type: String,
         unique: true,
         required: [true, 'The short form of the url is required']
@@ -19,7 +19,7 @@ var usersSchema = new mongoose.Schema({
         }
     },
     log: [
-        { type: Schema.Types.ObjectId, ref: 'exercise' }
+        { type: mongoose.Schema.Types.ObjectId, ref: 'exercise' }
     ]
 });
 
