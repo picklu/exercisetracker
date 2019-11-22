@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+var router = require('./routers/routes');
 
 const app = express();
 app.use(cors());
@@ -11,6 +12,7 @@ const dbURI = process.env.MLAB_URI || 'mongodb://localhost/exercise-track';
 mongoose.connect(
   dbURI,
   {
+    useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
   },
@@ -33,6 +35,9 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
+
+// API endpoints
+app.use('/api/exercise', router);
 
 // Not found middleware
 app.use((req, res, next) => {
