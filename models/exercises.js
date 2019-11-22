@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // Schema for urls
-var exerciseSchema = new mongoose.Schema({
+const exerciseSchema = new mongoose.Schema({
     description: {
         type: String,
         required: [true, 'The description is required']
@@ -17,5 +17,5 @@ var exerciseSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('exercise', exerciseSchema);
+module.exports = mongoose.model('exercises', exerciseSchema);
 
