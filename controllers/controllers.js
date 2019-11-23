@@ -91,5 +91,43 @@ exports.getUsers = function (req, res, next) {
 
 
 exports.getExercise = function (req, res, next) {
+    const userId = req.query.userId;
+    const from = req.query.from;
+    const to = req.query.to;
+    const limit = req.query.limit;
 
+    if (!userId) {
+        res.status(500)
+            .type('text')
+            .send('Unknown userid!');
+    }
+    else {
+        const _id = userId;
+        users.findOne({ _id }, { _id: false, username: true }, function (error, data) {
+            if (error) {
+                res.json({ error })
+            }
+            else if (data) {
+                const username = data.username;
+                const query = { userId, from, to, limit };
+                const options = { _id: false, description: true, duration: true, date: true }
+                exercises.find(query, options, function (error, data) {
+                    if (error) {
+                        res.json({ error })
+                    } else if (data) {
+                        const count = data.length;
+                        res.json({ username, _id, count, log: data });
+                    } else {
+                        res.json({ error: 'Something went wrong!' })
+                    }
+                })
+            }
+            else {
+                res.status(500)
+                    .type('text')
+                    .send('Unknown user_id!');
+            }
+
+        })
+    }
 }
