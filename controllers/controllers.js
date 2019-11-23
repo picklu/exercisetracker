@@ -92,14 +92,18 @@ exports.getUsers = function (req, res, next) {
 
 exports.getExercise = function (req, res, next) {
     const userId = req.query.userId;
-    const from = req.query.from;
-    const to = req.query.to;
-    const limit = req.query.limit;
+    let from = req.query.from;
+    let to = req.query.to;
+    let limit = req.query.limit;
+
+    from = from ? new Date(from) : new Date("2000-01-01");
+    to = to ? new Date(to) : new Date();
+    limit = limit ? Number(limit) : 100000000000;
 
     if (!userId) {
         res.status(500)
             .type('text')
-            .send('Unknown userid!');
+            .send('Unknown user_id!');
     }
     else {
         const _id = userId;
@@ -109,8 +113,20 @@ exports.getExercise = function (req, res, next) {
             }
             else if (data) {
                 const username = data.username;
-                const query = { userId, from, to, limit };
-                const options = { _id: false, description: true, duration: true, date: true }
+                const query = {
+                    userId,
+                    date: {
+                        "$lt": from,
+                        "$gte": to
+                    }
+                }
+                console.log("==>", query);
+                const options = {
+                    _id: false,
+                    description: true,
+                    duration: true,
+                    date: true
+                };
                 exercises.find(query, options, function (error, data) {
                     if (error) {
                         res.json({ error })
