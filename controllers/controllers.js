@@ -78,3 +78,18 @@ exports.addExercise = function (req, res, next) {
 
     }
 }
+
+exports.getUsers = function (req, res, next) {
+    users.find({}, function (error, data) {
+        if (error) {
+            res.json(error)
+        } else if (data) {
+            res.json(data)
+        }
+    })
+}
+
+
+exports.getExercise = function (req, res, next) {
+
+}
