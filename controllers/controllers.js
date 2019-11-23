@@ -96,9 +96,9 @@ exports.getExercise = function (req, res, next) {
     let to = req.query.to;
     let limit = req.query.limit;
 
-    from = from ? new Date(from) : new Date("2000-01-01");
-    to = to ? new Date(to) : new Date();
-    limit = limit ? Number(limit) : 100000000000;
+    from = from ? new Date(from).toISOString() : new Date("2000-01-01").toISOString();
+    to = to ? new Date(to).toISOString() : new Date().toISOString();
+    limit = limit ? Number(limit) : 1e12;
 
     if (!userId) {
         res.status(500)
@@ -116,27 +116,30 @@ exports.getExercise = function (req, res, next) {
                 const query = {
                     userId,
                     date: {
-                        "$lt": from,
-                        "$gte": to
+                        $gte: from,
+                        $lt: to
                     }
                 }
-                console.log("==>", query);
+                console.log("==>", from);
                 const options = {
                     _id: false,
                     description: true,
                     duration: true,
                     date: true
                 };
-                exercises.find(query, options, function (error, data) {
-                    if (error) {
-                        res.json({ error })
-                    } else if (data) {
-                        const count = data.length;
-                        res.json({ username, _id, count, log: data });
-                    } else {
-                        res.json({ error: 'Something went wrong!' })
-                    }
-                })
+                exercises.find(query, options)
+                    .limit(limit)
+                    .sort('-date')
+                    .exec(function (error, data) {
+                        if (error) {
+                            res.json({ error })
+                        } else if (data) {
+                            const count = data.length;
+                            res.json({ username, _id, count, log: data });
+                        } else {
+                            res.json({ error: 'Something went wrong!' })
+                        }
+                    })
             }
             else {
                 res.status(500)
